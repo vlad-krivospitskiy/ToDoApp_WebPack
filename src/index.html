@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo App</title>
+  </head>
+  <body>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: #749bc2;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        background-color: #91c8e4;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
+
+      header .logo {
+        padding: 5px 60px 5px 60px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      nav {
+        display: flex;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #fff;
+        padding: 5px 10px;
+        margin: 0 60px;
+        border-radius: 5px;
+        background-color: #4682a9;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 70px;
+        background-image: linear-gradient(to bottom, #b1d3ed, #749bc2);
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .todo-app {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .todo-columns {
+        display: flex;
+        justify-content: space-between;
+        width: 900px;
+      }
+
+      .todo-column {
+        flex: 1;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 0 5px;
+      }
+
+      .todos {
+        list-style: none;
+        padding: 0;
+      }
+
+      .todos li {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin-bottom: 5px;
+        position: relative;
+      }
+
+      .todos li::before {
+        content: attr(data-status);
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #91c8e4;
+        margin-right: 5px;
+      }
+      .todos li[data-status="План"] {
+        background-color: #91c8e4;
+      }
+      .todos li[data-status="В процесi"] {
+        background-color: #f00;
+      }
+      .todos li[data-status="Виконано"] {
+        background-color: #86ff00;
+      }
+
+      footer {
+        background-color: #4682a9;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .column-links a {
+        display: block;
+        margin-bottom: 5px;
+        text-decoration: none;
+        color: #fff;
+      }
+
+      .footer-logo {
+        padding: 5px 60px 5px 60px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      .todo-app input,
+      .todo-app select {
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 300px;
+        background-color: #fff;
+      }
+
+      .todo-app select {
+        background-color: #f0f0f0;
+        color: #000;
+      }
+
+      .todo-app button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #91c8e4;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .todo-app button:hover {
+        background-color: #4682a9;
+      }
+
+      .glowing {
+        position: relative;
+        min-width: 800px;
+        height: 350px;
+        margin: -150px;
+        transform-origin: right;
+        animation: colorChange 7s linear infinite;
+      }
+
+      .glowing:nth-child(even) {
+        transform-origin: left;
+      }
+
+      @keyframes colorChange {
+        0% {
+          filter: hue-rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          filter: hue-rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      .glowing span {
+        position: absolute;
+        top: calc(80px * var(--i));
+        left: calc(80px * var(--i));
+        bottom: calc(80px * var(--i));
+        right: calc(80px * var(--i));
+      }
+
+      .glowing span::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -8px;
+        width: 15px;
+        height: 15px;
+        background: #f00;
+        border-radius: 50%;
+      }
+
+      .glowing span:nth-child(3n + 1)::before {
+        background: rgba(134, 255, 0, 1);
+        box-shadow: 0 0 20px rgba(134, 255, 0, 1), 0 0 40px rgba(134, 255, 0, 1),
+          0 0 60px rgba(134, 255, 0, 1), 0 0 80px rgba(134, 255, 0, 1),
+          0 0 0 8px rgba(134, 255, 0, 0.1);
+      }
+
+      .glowing span:nth-child(3n + 2)::before {
+        background: rgba(255, 214, 0, 1);
+        box-shadow: 0 0 20px rgba(255, 214, 0, 1), 0 0 40px rgba(255, 214, 0, 1),
+          0 0 60px rgba(255, 214, 0, 1), 0 0 80px rgba(255, 214, 0, 1),
+          0 0 0 8px rgba(255, 214, 0, 0.1);
+      }
+
+      .glowing span:nth-child(3n + 3)::before {
+        background: rgba(0, 226, 255, 1);
+        box-shadow: 0 0 20px rgba(0, 226, 255, 1), 0 0 40px rgba(0, 226, 255, 1),
+          0 0 60px rgba(0, 226, 255, 1), 0 0 80px rgba(0, 226, 255, 1),
+          0 0 0 8px rgba(0, 226, 255, 0.1);
+      }
+
+      .glowing span:nth-child(3n + 1) {
+        animation: animate 10s alternate infinite;
+      }
+
+      .glowing span:nth-child(3n + 2) {
+        animation: animate-reverse 3s alternate infinite;
+      }
+
+      .glowing span:nth-child(3n + 3) {
+        animation: animate 8s alternate infinite;
+      }
+
+      @keyframes animate {
+        0% {
+          transform: rotate(180deg);
+        }
+        50% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes animate-reverse {
+        0% {
+          transform: rotate(360deg);
+        }
+
+        50% {
+          transform: rotate(180deg);
+        }
+
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+      @media (max-width: 600px) {
+        .todo-columns {
+          flex-direction: column;
+          align-items: center;
+        }
+        .todo-column {
+          margin: 5px 0;
+        }
+        .glowing {
+          display: none;
+        }
+      }
+
+      /* Styles for screen sizes greater than 600px */
+      @media (min-width: 601px) {
+        header {
+          display: flex;
+          flex-wrap: wrap;
+        }
+        .logo {
+          flex: 1;
+          text-align: center;
+        }
+        nav {
+          flex: 1;
+          text-align: center;
+        }
+        nav a {
+          margin: 5px;
+        }
+        main {
+          margin-top: 100px;
+          padding: 20px;
+        }
+        .todo-columns {
+          flex-direction: row;
+        }
+        .todo-column {
+          flex: 1;
+          margin: 0 5px;
+        }
+      }
+    </style>
+    <header>
+      <div class="logo">Logo</div>
+      <nav>
+        <a href="#">Link 1</a>
+        <a href="#">Link 2</a>
+        <a href="#">Link 3</a>
+        <a href="#">Link 4</a>
+        <a href="#">Link 5</a>
+        <a href="#">Link 6</a>
+      </nav>
+    </header>
+    <main>
+      <div class="todo-app">
+        <input type="text" id="todoInput" placeholder="Введiть завдання" />
+        <select id="statusSelect">
+          <option value="plan">План</option>
+          <option value="inProgress">В процесi</option>
+          <option value="done">Виконано</option>
+        </select>
+        <button id="addButton">Додати завдання</button>
+        <div class="todo-columns">
+          <div class="todo-column" id="todoPlan">
+            <h3>План</h3>
+            <ul class="todos"></ul>
+          </div>
+          <div class="todo-column" id="todoInProgress">
+            <h3>В процесi</h3>
+            <ul class="todos"></ul>
+          </div>
+          <div class="todo-column" id="todoDone">
+            <h3>Виконано</h3>
+            <ul class="todos"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="glowing">
+        <span style="--i: 1"></span>
+
+        <span style="--i: 2"></span>
+
+        <span style="--i: 3"></span>
+      </div>
+
+      <div class="glowing">
+        <span style="--i: 1"></span>
+
+        <span style="--i: 2"></span>
+
+        <span style="--i: 3"></span>
+      </div>
+
+      <div class="glowing">
+        <span style="--i: 1"></span>
+
+        <span style="--i: 2"></span>
+
+        <span style="--i: 3"></span>
+      </div>
+
+      <div class="glowing">
+        <span style="--i: 1"></span>
+
+        <span style="--i: 2"></span>
+
+        <span style="--i: 3"></span>
+      </div>
+    </main>
+
+    <footer>
+      <nav class="column-links">
+        <a href="#">Link 1</a>
+        <a href="#">Link 2</a>
+        <a href="#">Link 3</a>
+        <a href="#">Link 4</a>
+        <a href="#">Link 5</a>
+        <a href="#">Link 6</a>
+      </nav>
+      <div class="footer-logo">Logo</div>
+    </footer>
+    <script src="index.js"></script>
+  </body>
+</html>
